@@ -1,0 +1,45 @@
+from flask import Flask, request, jsonify
+from threading import Thread
+import requests
+
+app = Flask(__name__)
+
+@app.route('/join', methods=['POST'])
+def join():
+    data = request.json
+    channel_id = data.get('channel_id')
+    response = requests.post('http://127.0.0.1:5000/discord/join', json={'channel_id': channel_id})
+    return jsonify(response.json())
+
+@app.route('/leave', methods=['POST'])
+def leave():
+    response = requests.post('http://127.0.0.1:5000/discord/leave')
+    return jsonify(response.json())
+
+@app.route('/play', methods=['POST'])
+def play():
+    data = request.json
+    url = data.get('url')
+    response = requests.post('http://127.0.0.1:5000/discord/play', json={'url': url})
+    return jsonify(response.json())
+
+@app.route('/pause', methods=['POST'])
+def pause():
+    response = requests.post('http://127.0.0.1:5000/discord/pause')
+    return jsonify(response.json())
+
+@app.route('/resume', methods=['POST'])
+def resume():
+    response = requests.post('http://127.0.0.1:5000/discord/resume')
+    return jsonify(response.json())
+
+@app.route('/stop', methods=['POST'])
+def stop():
+    response = requests.post('http://127.0.0.1:5000/discord/stop')
+    return jsonify(response.json())
+
+def run_flask():
+    app.run(port=5000)
+
+if __name__ == "__main__":
+    Thread(target=run_flask).start()
